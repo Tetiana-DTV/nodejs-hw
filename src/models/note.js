@@ -3,29 +3,23 @@ import { model } from 'mongoose';
 
 const noteSchema = new Schema(
   {
-    name: {
+    title: {
       type: String,
       required: true,
-      trim: true, // прибирає пробіли на початку та в кінці
+      trim: true,
     },
-    age: {
-      type: Number,
-      required: true,
-    },
-    gender: {
+    content: {
       type: String,
-      required: true,
-      enum: ['male', 'female', 'other'],
+      trim: true,
+      default: '',
     },
-    avgMark: {
-      type: Number,
-      required: true,
-    },
-    onDuty: {
-      type: Boolean,
-      default: false,
+    tag: {
+      type: String,
+      enum: ['Work', 'Personal', 'Meeting', 'Shopping', 'Ideas', 'Travel', 'Finance', 'Health', 'Important', 'Todo'],
+      default: 'Todo',
     },
   },
+    
   {
     timestamps: true,
     versionKey: false,
