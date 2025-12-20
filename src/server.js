@@ -22,8 +22,8 @@ app.use(cors());
 app.use(cookieParser());
 
 /// Маршрути
-app.use(notesRoutes);
-app.use(authRoutes);
+app.use('/api/notes', notesRoutes);
+app.use('/api/auth', authRoutes);
 
 // Middleware 404
 app.use(notFoundHandler);
