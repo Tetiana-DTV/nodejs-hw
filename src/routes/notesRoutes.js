@@ -9,7 +9,7 @@ import {
   updateNote,
 } from '../controllers/notesController.js';
 
-import { authenticate } from '../middlewares/authenticate.js';
+import { authenticate } from '../middleware/authenticate.js';
 
 import {
   getAllNotesSchema,
