@@ -22,8 +22,8 @@ app.use(cors());
 app.use(cookieParser());
 
 
-app.use('/api/notes', notesRoutes);
-app.use('/api/auth', authRoutes);
+app.use(notesRoutes);
+app.use(authRoutes);
 
 
 app.use(notFoundHandler);
