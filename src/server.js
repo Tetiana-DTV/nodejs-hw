@@ -21,16 +21,16 @@ app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 
-/// Маршрути
+
 app.use('/api/notes', notesRoutes);
 app.use('/api/auth', authRoutes);
 
-// Middleware 404
+
 app.use(notFoundHandler);
 
 app.use(errors());
 
-// Middleware для обробки помилок
+
 app.use(errorHandler);
 
 await connectMongoDB();
