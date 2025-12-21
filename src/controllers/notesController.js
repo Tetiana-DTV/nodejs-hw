@@ -2,6 +2,8 @@ import { Note } from '../models/note.js';
 import createHttpError from 'http-errors';
 
 export const getAllNotes = async (req, res) => {
+  const { _id: userId } = req.user;
+
   const page = Number(req.query.page) || 1;
   const perPage = Number(req.query.perPage) || 10;
   const { tag, search } = req.query;
@@ -9,7 +11,7 @@ export const getAllNotes = async (req, res) => {
 
   const skip = (page - 1) * perPage;
 
-  const notesQuery = Note.find();
+  const notesQuery = Note.find({ userId });
 
   if (search?.trim()) {
     notesQuery.where({ $text: { $search: search } });
@@ -37,7 +39,9 @@ res.status(200).json({
 
 export const getNoteById = async (req, res, next) => {
   const { noteId } = req.params;
-  const note = await Note.findById(noteId);
+  const { _id: userId } = req.user;
+
+  const note = await Note.findOne({ _id: noteId, userId });
 
   if (!note) {
     next(createHttpError(404, 'Note not found'));
@@ -47,14 +51,22 @@ export const getNoteById = async (req, res, next) => {
 };
 
 export const createNote = async (req, res) => {
-  const note = await Note.create(req.body);
+  const { _id: userId } = req.user;
+
+  const note = await Note.create({
+    ...req.body,
+    userId,
+  });
+
   res.status(201).json(note);
 };
 
 export const deleteNote = async (req, res, next) => {
   const { noteId } = req.params;
+  const { _id: userId } = req.user;
   const note = await Note.findOneAndDelete({
     _id: noteId,
+    userId,
   });
 
   if (!note) {
@@ -67,16 +79,16 @@ export const deleteNote = async (req, res, next) => {
 
 export const updateNote = async (req, res, next) => {
   const { noteId } = req.params;
+  const { _id: userId } = req.user;
 
-  const note = await Note.findOneAndUpdate({ _id: noteId }, req.body, {
-    new: true,
-  });
+  const note = await Note.findOneAndUpdate({ _id: noteId, userId },
+    req.body,
+    { new: true }
+  );
 
   if (!note) {
-    next(createHttpError(404, 'Note not found'));
-    return;
+    return next(createHttpError(404, 'Note not found'));
   }
 
   res.status(200).json(note);
 };
-
