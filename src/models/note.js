@@ -4,6 +4,11 @@ import { TAGS } from '../constants/tags.js';
 
 const noteSchema = new Schema(
   {
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -16,20 +21,26 @@ const noteSchema = new Schema(
     },
     tag: {
       type: String,
-      enum: TAGS,
+      enum: [...TAGS],
       default: 'Todo',
     },
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
   },
-    
+  { timestamps: true },
+);
+
+noteSchema.index(
   {
-    timestamps: true,
-    versionKey: false,
+    title: 'text',
+    content: 'text',
+  },
+  {
+    name: 'NoteTextIndex',
+    weights: {
+      title: 5,
+      content: 1,
+    },
+    default_language: 'english',
   },
 );
-noteSchema.index({ title: 'text', content: 'text' });
+
 export const Note = model('Note', noteSchema);
